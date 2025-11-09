@@ -14,7 +14,16 @@ interface JokeReport {
 	date: string;
 }
 
-const API_URL = 'https://icanhazdadjoke.com/';
+interface WeatherData {
+	current_condition: Array<{
+		temp_C: string;
+		weatherDesc: Array<{ value: string }>;
+	}>;
+}
+
+const API_JOKE_URL = 'https://icanhazdadjoke.com/';
+const WEATHER_CITY = 'Barcelona';
+const API_WEATHER_URL = `https://wttr.in/${WEATHER_CITY}?format=j1`;
 
 let reportJokes: JokeReport[] = [];
 let currentJoke: string = '';
@@ -22,7 +31,7 @@ let currentScore: 1 | 2 | 3 | null = null;
 
 async function fetchDadJoke(): Promise<string> {
 	try {
-		const response = await fetch(API_URL, {
+		const response = await fetch(API_JOKE_URL, {
 			headers: {
 				Accept: 'application/json',
 			},
@@ -38,6 +47,38 @@ async function fetchDadJoke(): Promise<string> {
 		console.error('Error fetching joke:', error);
 		return "Oops! I'm out of ideas. Please try again.";
 	}
+}
+
+async function fetchWeatherData(): Promise<string> {
+	try {
+		const response = await fetch(API_WEATHER_URL);
+
+		if (!response.ok) {
+			throw new Error(`Weather API error! status: ${response.status}`);
+		}
+
+		const data: WeatherData = await response.json();
+		const temp = data.current_condition[0].temp_C;
+		const condition = data.current_condition[0].weatherDesc[0].value;
+
+		return `${condition}, ${temp}°C`;
+	} catch (error) {
+		console.error('Error fetching weather:', error);
+		return 'Weather unavailable';
+	}
+}
+
+function displayWeather(weatherInfo: string): void {
+	const weatherElement = document.querySelector('#weather-widget');
+
+	if (weatherElement) {
+		weatherElement.textContent = weatherInfo;
+	}
+}
+
+async function loadWeather(): Promise<void> {
+	const weatherInfo = await fetchWeatherData();
+	displayWeather(weatherInfo);
 }
 
 function displayJoke(joke: string): void {
@@ -116,6 +157,7 @@ function initializeApp(): void {
 	}
 
 	loadFirstJoke();
+	loadWeather();
 }
 
 document.addEventListener('DOMContentLoaded', initializeApp);
