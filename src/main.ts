@@ -2,16 +2,17 @@
 
 import './style.css';
 
-interface JokeResponse {
+interface DadJokeResponse {
 	id: string;
 	joke: string;
 	status: number;
 }
 
-interface JokeReport {
-	joke: string;
-	score: 1 | 2 | 3;
-	date: string;
+interface OfficialJokeResponse {
+	setup: string;
+	punchline: string;
+	type: string;
+	id: number;
 }
 
 interface WeatherData {
@@ -21,17 +22,25 @@ interface WeatherData {
 	}>;
 }
 
-const API_JOKE_URL = 'https://icanhazdadjoke.com/';
+interface JokeReport {
+	joke: string;
+	score: 1 | 2 | 3;
+	date: string;
+}
+const API_DAD_JOKE_URL = 'https://icanhazdadjoke.com/';
+const API_OFFICIAL_JOKE_URL =
+	'https://official-joke-api.appspot.com/random_joke';
 const WEATHER_CITY = 'Barcelona';
 const API_WEATHER_URL = `https://wttr.in/${WEATHER_CITY}?format=j1`;
 
 let reportJokes: JokeReport[] = [];
 let currentJoke: string = '';
 let currentScore: 1 | 2 | 3 | null = null;
+let useAlternateApi: boolean = false;
 
 async function fetchDadJoke(): Promise<string> {
 	try {
-		const response = await fetch(API_JOKE_URL, {
+		const response = await fetch(API_DAD_JOKE_URL, {
 			headers: {
 				Accept: 'application/json',
 			},
@@ -41,12 +50,36 @@ async function fetchDadJoke(): Promise<string> {
 			throw new Error(`HTTP error. Status: ${response.status}`);
 		}
 
-		const data: JokeResponse = await response.json();
+		const data: DadJokeResponse = await response.json();
 		return data.joke;
 	} catch (error) {
 		console.error('Error fetching joke:', error);
 		return "Oops! I'm out of ideas. Please try again.";
 	}
+}
+
+async function fetchOfficialJoke(): Promise<string> {
+	try {
+		const response = await fetch(API_OFFICIAL_JOKE_URL);
+
+		if (!response.ok) {
+			throw new Error(`HTTP error. Status: ${response.status}`);
+		}
+
+		const data: OfficialJokeResponse = await response.json();
+		return `${data.setup} ${data.punchline}`;
+	} catch (error) {
+		console.error('Error fetching official joke:', error);
+		return "Oops! I'm out of ideas. Please try again.";
+	}
+}
+
+async function fetchJoke(): Promise<string> {
+	const joke = useAlternateApi
+		? await fetchOfficialJoke()
+		: await fetchDadJoke();
+	useAlternateApi = !useAlternateApi;
+	return joke;
 }
 
 async function fetchWeatherData(): Promise<string> {
@@ -120,7 +153,7 @@ async function handleNextJoke(): Promise<void> {
 		button.textContent = 'Joking...';
 	}
 
-	const joke = await fetchDadJoke();
+	const joke = await fetchJoke();
 	displayJoke(joke);
 
 	if (button) {
@@ -130,7 +163,7 @@ async function handleNextJoke(): Promise<void> {
 }
 
 async function loadFirstJoke(): Promise<void> {
-	const joke = await fetchDadJoke();
+	const joke = await fetchJoke();
 	displayJoke(joke);
 }
 
