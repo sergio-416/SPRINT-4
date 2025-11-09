@@ -1,0 +1,49 @@
+@use '../abstracts' as *;
+
+button {
+    @include button-base;
+}
+
+#next-joke-btn {
+    background-color: $color-primary;
+    color: white;
+    @include hover-lift;
+    @include card-shadow('sm');
+
+    &:hover:not(:disabled) {
+        background-color: $color-primary-dark;
+        @include card-shadow('md');
+    }
+}
+
+#score-1,
+#score-2,
+#score-3 {
+    font-size: 2rem;
+    padding: $spacing-md;
+    background-color: $color-neutral-100;
+    @include transition(all);
+    @include card-shadow('sm');
+
+    &:hover:not(:disabled) {
+        background-color: $color-neutral-200;
+        transform: scale(1.1);
+        @include card-shadow('md');
+    }
+
+    &:active {
+        transform: scale(0.95);
+    }
+}
+
+#score-1:hover:not(:disabled) {
+    background-color: hsla(0, 70%, 95%, 1);
+}
+
+#score-2:hover:not(:disabled) {
+    background-color: hsla(40, 70%, 95%, 1);
+}
+
+#score-3:hover:not(:disabled) {
+    background-color: hsla(140, 70%, 95%, 1);
+}
