@@ -1,0 +1,19 @@
+@use '../abstracts' as *;
+
+
+main {
+    background-color: white;
+    border-radius: $border-radius-lg;
+    @include card-shadow('lg');
+
+    section {
+        @include transition(opacity);
+    }
+}
+
+#joke-container {
+    min-height: 8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

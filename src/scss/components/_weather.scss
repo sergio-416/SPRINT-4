@@ -1,0 +1,13 @@
+@use '../abstracts' as *;
+
+#weather-widget {
+    background-color: hsla($hue-primary, 60%, 50%, 0.1);
+    backdrop-filter: blur(8px);
+    padding: $spacing-sm $spacing-md;
+    border-radius: $border-radius-lg;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: $color-neutral-800;
+    @include card-shadow('sm');
+    border: 1px solid hsla($hue-primary, 60%, 50%, 0.15);
+}

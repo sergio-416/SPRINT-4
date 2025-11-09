@@ -1,0 +1,54 @@
+@use 'variables' as *;
+
+@mixin transition($property: all, $duration: $transition-normal, $timing: ease-in-out) {
+    transition: $property $duration $timing;
+}
+
+@mixin hover-lift {
+    @include transition(transform);
+
+    &:hover {
+        transform: translateY(-2px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+@mixin card-shadow($level: 'md') {
+    @if $level =='sm' {
+        box-shadow: $shadow-sm;
+    }
+
+    @else if $level =='md' {
+        box-shadow: $shadow-md;
+    }
+
+    @else if $level =='lg' {
+        box-shadow: $shadow-lg;
+    }
+}
+
+@mixin focus-ring($color: $color-primary) {
+    outline: 2px solid $color;
+    outline-offset: 2px;
+}
+
+@mixin button-base {
+    padding: $spacing-sm $spacing-lg;
+    border-radius: $border-radius-md;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    @include transition(all);
+
+    &:focus-visible {
+        @include focus-ring;
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
