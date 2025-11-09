@@ -1,24 +1,71 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+'use strict';
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+interface JokeResponse {
+	id: string;
+	joke: string;
+	status: number;
+}
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+const API_URL = 'https://icanhazdadjoke.com/';
+
+async function fetchDadJoke(): Promise<string> {
+	try {
+		const response = await fetch(API_URL, {
+			headers: {
+				Accept: 'application/json',
+			},
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const data: JokeResponse = await response.json();
+		return data.joke;
+	} catch (error) {
+		console.error('Error fetching joke:', error);
+		return "Oops! I'm out of ideas. Please try again.";
+	}
+}
+
+function firstJoke(joke: string): void {
+	const jokeTextElement = document.querySelector('#joke-text');
+
+	if (jokeTextElement) {
+		jokeTextElement.textContent = joke;
+	}
+}
+
+async function nextJoke(): Promise<void> {
+	const button = document.querySelector('#next-joke-btn') as HTMLButtonElement;
+
+	if (button) {
+		button.disabled = true;
+		button.textContent = 'Loading...';
+	}
+
+	const joke = await fetchDadJoke();
+	firstJoke(joke);
+
+	if (button) {
+		button.disabled = false;
+		button.textContent = 'Next Joke';
+	}
+}
+
+async function loadFirstJoke(): Promise<void> {
+	const joke = await fetchDadJoke();
+	firstJoke(joke);
+}
+
+function initializeApp(): void {
+	const button = document.querySelector('#next-joke-btn');
+
+	if (button) {
+		button.addEventListener('click', nextJoke);
+	}
+
+	loadFirstJoke();
+}
+
+document.addEventListener('DOMContentLoaded', initializeApp);
