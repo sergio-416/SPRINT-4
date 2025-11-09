@@ -1,5 +1,7 @@
 'use strict';
 
+import './style.css';
+
 interface JokeResponse {
 	id: string;
 	joke: string;
@@ -17,7 +19,7 @@ async function fetchDadJoke(): Promise<string> {
 		});
 
 		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+			throw new Error(`HTTP error. Status: ${response.status}`);
 		}
 
 		const data: JokeResponse = await response.json();
@@ -28,7 +30,7 @@ async function fetchDadJoke(): Promise<string> {
 	}
 }
 
-function firstJoke(joke: string): void {
+function displayJoke(joke: string): void {
 	const jokeTextElement = document.querySelector('#joke-text');
 
 	if (jokeTextElement) {
@@ -36,16 +38,16 @@ function firstJoke(joke: string): void {
 	}
 }
 
-async function nextJoke(): Promise<void> {
+async function handleNextJoke(): Promise<void> {
 	const button = document.querySelector('#next-joke-btn') as HTMLButtonElement;
 
 	if (button) {
 		button.disabled = true;
-		button.textContent = 'Loading...';
+		button.textContent = 'Joking...';
 	}
 
 	const joke = await fetchDadJoke();
-	firstJoke(joke);
+	displayJoke(joke);
 
 	if (button) {
 		button.disabled = false;
@@ -55,14 +57,14 @@ async function nextJoke(): Promise<void> {
 
 async function loadFirstJoke(): Promise<void> {
 	const joke = await fetchDadJoke();
-	firstJoke(joke);
+	displayJoke(joke);
 }
 
 function initializeApp(): void {
 	const button = document.querySelector('#next-joke-btn');
 
 	if (button) {
-		button.addEventListener('click', nextJoke);
+		button.addEventListener('click', handleNextJoke);
 	}
 
 	loadFirstJoke();

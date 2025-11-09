@@ -7,13 +7,16 @@
 		<meta name="author" content="Sergio Morey" />
 		<title>Dad Jokes Generator</title>
 	</head>
-	<body>
-		<main>
-			<h1>Dad Jokes Generator</h1>
-			<section id="joke-container">
-				<p id="joke-text">Here's the first joke...!</p>
+	<body class="grid place-items-center min-h-screen">
+		<main class="grid gap-6 p-8 max-w-2xl w-full">
+			<h1 class="text-center">Dad Jokes Generator</h1>
+			<section id="joke-container" class="text-center">
+				<p id="joke-text">Getting a joke from a professional dad...</p>
 			</section>
-			<button id="next-joke-btn">Next Joke</button>
+			<div class="flex justify-center items-center gap-2">
+				<button id="next-joke-btn">Next Joke</button>
+				<span>(Are you sure?)</span>
+			</div>
 		</main>
 		<script type="module" src="/src/main.ts"></script>
 	</body>
