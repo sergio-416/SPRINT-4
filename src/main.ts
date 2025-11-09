@@ -8,7 +8,17 @@ interface JokeResponse {
 	status: number;
 }
 
+interface JokeReport {
+	joke: string;
+	score: 1 | 2 | 3;
+	date: string;
+}
+
 const API_URL = 'https://icanhazdadjoke.com/';
+
+let reportJokes: JokeReport[] = [];
+let currentJoke: string = '';
+let currentScore: 1 | 2 | 3 | null = null;
 
 async function fetchDadJoke(): Promise<string> {
 	try {
@@ -35,11 +45,34 @@ function displayJoke(joke: string): void {
 
 	if (jokeTextElement) {
 		jokeTextElement.textContent = joke;
+		currentJoke = joke;
 	}
+}
+
+function handleScoreClick(score: 1 | 2 | 3): void {
+	currentScore = score;
+}
+
+function saveCurrentReport(): void {
+	if (currentScore !== null && currentJoke !== '') {
+		const report: JokeReport = {
+			joke: currentJoke,
+			score: currentScore,
+			date: new Date().toISOString(),
+		};
+
+		reportJokes.push(report);
+		console.log('Report saved:', report);
+		console.log('All reports:', reportJokes);
+	}
+
+	currentScore = null;
 }
 
 async function handleNextJoke(): Promise<void> {
 	const button = document.querySelector('#next-joke-btn') as HTMLButtonElement;
+
+	saveCurrentReport();
 
 	if (button) {
 		button.disabled = true;
@@ -61,10 +94,25 @@ async function loadFirstJoke(): Promise<void> {
 }
 
 function initializeApp(): void {
-	const button = document.querySelector('#next-joke-btn');
+	const nextButton = document.querySelector('#next-joke-btn');
+	const score1Button = document.querySelector('#score-1');
+	const score2Button = document.querySelector('#score-2');
+	const score3Button = document.querySelector('#score-3');
 
-	if (button) {
-		button.addEventListener('click', handleNextJoke);
+	if (nextButton) {
+		nextButton.addEventListener('click', handleNextJoke);
+	}
+
+	if (score1Button) {
+		score1Button.addEventListener('click', () => handleScoreClick(1));
+	}
+
+	if (score2Button) {
+		score2Button.addEventListener('click', () => handleScoreClick(2));
+	}
+
+	if (score3Button) {
+		score3Button.addEventListener('click', () => handleScoreClick(3));
 	}
 
 	loadFirstJoke();
