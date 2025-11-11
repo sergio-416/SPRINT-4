@@ -124,7 +124,26 @@ function displayJoke(joke: string): void {
 }
 
 function handleScoreClick(score: 1 | 2 | 3): void {
-	currentScore = score;
+	const clickedButton = document.querySelector(`#score-${score}`);
+
+	if (!clickedButton) {
+		return;
+	}
+
+	const isAlreadySelected = clickedButton.classList.contains('selected');
+
+	if (isAlreadySelected) {
+		clickedButton.classList.remove('selected');
+		currentScore = null;
+	} else {
+		const allScoreButtons = document.querySelectorAll(
+			'#score-1, #score-2, #score-3'
+		);
+		allScoreButtons.forEach(button => button.classList.remove('selected'));
+
+		clickedButton.classList.add('selected');
+		currentScore = score;
+	}
 }
 
 function saveCurrentReport(): void {
@@ -136,11 +155,15 @@ function saveCurrentReport(): void {
 		};
 
 		reportJokes.push(report);
-		console.log('Report saved:', report);
 		console.log('All reports:', reportJokes);
 	}
 
 	currentScore = null;
+
+	const allScoreButtons = document.querySelectorAll(
+		'#score-1, #score-2, #score-3'
+	);
+	allScoreButtons.forEach(button => button.classList.remove('selected'));
 }
 
 async function handleNextJoke(): Promise<void> {
