@@ -34,16 +34,40 @@ button {
     &:active {
         transform: scale(0.95);
     }
+
+    &.selected {
+        transform: scale(1.1);
+        @include card-shadow('md');
+        border: 2px solid $color-primary;
+    }
 }
 
-#score-1:hover:not(:disabled) {
-    background-color: hsla(0, 70%, 95%, 1);
+#score-1 {
+    &:hover:not(:disabled) {
+        background-color: hsla(0, 70%, 95%, 1);
+    }
+
+    &.selected {
+        background-color: hsla(0, 70%, 95%, 1);
+    }
 }
 
-#score-2:hover:not(:disabled) {
-    background-color: hsla(40, 70%, 95%, 1);
+#score-2 {
+    &:hover:not(:disabled) {
+        background-color: hsla(40, 70%, 95%, 1);
+    }
+
+    &.selected {
+        background-color: hsla(40, 70%, 95%, 1);
+    }
 }
 
-#score-3:hover:not(:disabled) {
-    background-color: hsla(140, 70%, 95%, 1);
+#score-3 {
+    &:hover:not(:disabled) {
+        background-color: hsla(140, 70%, 95%, 1);
+    }
+
+    &.selected {
+        background-color: hsla(140, 70%, 95%, 1);
+    }
 }
